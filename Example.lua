@@ -1,120 +1,143 @@
 local Library = loadstring(game:HttpGet("https://raw.githubusercontent.com/Ali-lov3/SportClub/refs/heads/main/Source.lua"))()
 
 local Window = Library:CreateWindow({
-	Title = "Example",
-	GameInfo = "Example",
+	Title = "sportsclub",
+	TitleAccent = "sports",
+	GameInfo = "Bloxstrike",
+	Link = "https://getsportsclub.com",
 	Logo = 77434646025119,
 	ConfigFolder = "Example",
-	Key = "EXAMPLE-0000-0000",
-	LifeTime = true,
-	Anonymous = false,
 })
 
-Window:HomeManager()
 Window:ConfigManager()
 
-local Tab = Window:Tab({ Name = "Example", Icon = "layers" })
-local First = Tab:SubTab({ Name = "Example", Icon = "layers" })
-local Second = Tab:SubTab({ Name = "Example", Icon = "settings" })
+local Aim = Window:Tab({ Name = "Aim Assistance", Icon = "eye", Category = "Main", Description = "Crosshair locks into target head" })
+local Misc = Window:Tab({ Name = "Misc", Icon = "eye", Category = "Main", Description = "Small extras" })
+local Visuals = Window:Tab({ Name = "Visuals", Icon = "eye", Category = "Visuals", Description = "Everything you can see" })
+local Servers = Window:Tab({ Name = "Servers", Icon = "eye", Category = "Other", Description = "Rejoin and hop servers" })
+local Settings = Window:Tab({ Name = "Settings", Icon = "eye", Category = "Settings", Description = "Interface options" })
 
-local Basic = First:Section({ Name = "Example", Icon = "layers", Side = "Left" })
+local Aimbot = Aim:SubTab({ Name = "Aimbot", Icon = "eye" })
+local Silent = Aim:SubTab({ Name = "Silent", Icon = "eye" })
+local Trigger = Aim:SubTab({ Name = "Trigger", Icon = "eye" })
 
-Basic:Toggle({
-	Name = "Example",
-	Flag = "ExampleToggle",
-	Default = false,
-	Callback = function(Value)
-		print(Value)
-	end,
-})
+local Main = Aimbot:Section({ Name = "Aimbot", Icon = "eye", Side = "Left" })
 
-local Option = Basic:OptionToggle({
-	Name = "Example",
-	Flag = "ExampleOption",
-	Default = false,
-})
+Main:Toggle({ Name = "Selected Toggle", Flag = "SelectedToggle", Default = true })
+Main:Toggle({ Name = "Unselected Toggle", Flag = "UnselectedToggle", Default = true })
 
-Option:Slider({
-	Name = "Example",
-	Flag = "ExampleOptionSlider",
+Main:Slider({
+	Name = "Slider",
+	Flag = "MainSlider",
 	Min = 0,
 	Max = 100,
-	Default = 50,
+	Default = 49,
+	Decimals = 0,
+	Suffix = "%",
+})
+
+local SliderLeft, SliderRight = Main:Split()
+
+SliderLeft:Slider({ Name = "Slider", Flag = "SplitSliderLeft", Min = 0, Max = 100, Default = 78, Decimals = 0, Suffix = "%" })
+SliderRight:Slider({ Name = "Slider", Flag = "SplitSliderRight", Min = 0, Max = 100, Default = 50, Decimals = 0, Suffix = "%" })
+
+Main:MultiDropdown({
+	Name = "Dropdown",
+	Flag = "MainDropdown",
+	Options = { "Value1", "Value2", "Value3", "Value4", "Value5", "Value6" },
+	Default = { "Value3", "Value4", "Value5", "Value6" },
+})
+
+Main:Input({ Name = "Input", Flag = "MainInput", Placeholder = "Type here" })
+
+local Premium = Aimbot:Section({ Name = "Premium", Icon = "eye", Side = "Left", Collapsed = true })
+
+Premium:Toggle({ Name = "Premium Toggle", Flag = "PremiumToggle", Default = false })
+
+local Elements = Aimbot:Section({ Name = "Elements", Icon = "eye", Side = "Right" })
+
+local WithColor = Elements:Toggle({ Name = "Toggle w Colorpicker", Flag = "ToggleColor", Default = true })
+WithColor:ColorPicker({ Flag = "ToggleColorValue", Default = Color3.fromRGB(230, 110, 20) })
+
+Elements:Keybind({ Name = "Keypicker", Flag = "PlainKeypicker" })
+
+local WithKey = Elements:Toggle({ Name = "Toggle w Keypicker", Flag = "ToggleKey", Default = true })
+WithKey:Keybind({ Flag = "ToggleKeyValue" })
+
+Elements:Divider()
+
+Elements:Toggle({ Name = "Risky Toggle", Flag = "RiskyToggle", Style = "Risky", Default = false })
+
+Elements:Slider({
+	Name = "Warning Slider",
+	Flag = "WarningSlider",
+	Style = "Warning",
+	Min = 0,
+	Max = 10,
+	Default = 3,
 	Decimals = 0,
 })
 
-Option:Toggle({
-	Name = "Example",
-	Flag = "ExampleOptionToggle",
-	Default = true,
+Elements:Divider({ Name = "Aimbot Settings" })
+
+Elements:Label({
+	Name = "Label",
+	Description = "This is a label with a description and a seperator",
+	Separator = true,
 })
 
-Basic:Slider({
-	Name = "Example",
-	Flag = "ExampleSlider",
-	Min = 0,
-	Max = 1,
-	Default = 0.5,
-	Decimals = 2,
+local NotifyLeft, NotifyRight = Elements:Split()
+
+NotifyLeft:Button({
+	Name = "Notify",
+	Callback = function()
+		Window:Notify({ Title = "This is a notification" })
+	end,
 })
 
-Basic:Button({
+NotifyRight:Button({
+	Name = "Notify Full",
+	Callback = function()
+		Window:Notify({
+			Title = '<font color="rgb(0,119,255)">Hello</font> there!',
+			Text = 'This notification has an <font color="rgb(255,200,0)">optional</font> description.',
+		})
+	end,
+})
+
+Elements:Button({
+	Name = "Notify Color",
+	Callback = function()
+		Window:Notify({
+			Title = "Custom color",
+			Text = "The glow follows the color option.",
+			Color = Color3.fromRGB(255, 70, 70),
+		})
+	end,
+})
+
+Elements:Divider({ Name = "Centered Divider", Centered = true })
+
+Elements:SearchDropdown({
+	Name = "Dropdown (Search)",
+	Flag = "SearchDropdown",
+	Options = { "Option1", "Option2", "Option3", "Option4", "Option5" },
+	Default = "Option1",
+})
+
+local MiscSection = Misc:Section({ Name = "Misc", Icon = "eye", Side = "Left" })
+MiscSection:Toggle({ Name = "Example", Flag = "MiscToggle", Default = false })
+
+local VisualSection = Visuals:Section({ Name = "Visuals", Icon = "eye", Side = "Left" })
+VisualSection:Toggle({ Name = "Example", Flag = "VisualToggle", Default = false })
+
+local ServerSection = Servers:Section({ Name = "Servers", Icon = "eye", Side = "Left" })
+ServerSection:Button({
 	Name = "Example",
 	Callback = function()
-		Window:Notify({ Title = "Example", Text = "Example", Icon = "bell" })
+		Window:Notify({ Title = "Example" })
 	end,
 })
 
-local Lists = First:Section({ Name = "Example", Icon = "list", Side = "Right" })
-
-Lists:Dropdown({
-	Name = "Example",
-	Flag = "ExampleDropdown",
-	Options = { "Example 1", "Example 2", "Example 3" },
-	Default = "Example 1",
-})
-
-Lists:SearchDropdown({
-	Name = "Example",
-	Flag = "ExampleSearchDropdown",
-	Options = { "Example 1", "Example 2", "Example 3", "Example 4", "Example 5", "Example 6" },
-	Default = "Example 1",
-})
-
-Lists:MultiDropdown({
-	Name = "Example",
-	Flag = "ExampleMultiDropdown",
-	Options = { "Example 1", "Example 2", "Example 3", "Example 4" },
-	Default = { "Example 1", "Example 2" },
-})
-
-local Input = Second:Section({ Name = "Example", Icon = "keyboard", Side = "Left" })
-
-Input:Keybind({
-	Name = "Example",
-	Flag = "ExampleKeybind",
-	Pressed = function()
-		Window:Toggle()
-	end,
-})
-
-Input:ColorPicker({
-	Name = "Example",
-	Flag = "ExampleColor",
-	Default = Color3.fromRGB(0, 119, 255),
-})
-
-local Extra = Second:Section({ Name = "Example", Icon = "sliders-horizontal", Side = "Right" })
-
-Extra:Toggle({
-	Name = "Example",
-	Flag = "ExampleExtraToggle",
-	Default = true,
-})
-
-Extra:Button({
-	Name = "Example",
-	Callback = function()
-		Window:Notify({ Title = "Example", Text = "Example", Icon = "check" })
-	end,
-})
+local SettingSection = Settings:Section({ Name = "Settings", Icon = "eye", Side = "Left" })
+SettingSection:Toggle({ Name = "Example", Flag = "SettingToggle", Default = true })
