@@ -1851,6 +1851,22 @@ function Library:CreateWindow(Config)
 		}, Parent)
 	end
 
+	local function BarGlow(Bar, Transparency)
+		return New("ImageLabel", {
+			AnchorPoint = Vector2.new(0, 0.5),
+			Position = UDim2.new(0, -12, 0.5, 0),
+			Size = UDim2.new(1, 24, 1, 14),
+			BackgroundTransparency = 1,
+			BorderSizePixel = 0,
+			Image = "rbxassetid://5028857084",
+			ImageColor3 = Theme.Accent,
+			ImageTransparency = Transparency,
+			ScaleType = Enum.ScaleType.Slice,
+			SliceCenter = Rect.new(24, 24, 276, 276),
+			ZIndex = 1,
+		}, Bar)
+	end
+
 	local WatermarkWrap = New("Frame", {
 		Size = UDim2.new(1, 0, 0, 0),
 		AutomaticSize = Enum.AutomaticSize.Y,
@@ -2314,7 +2330,7 @@ function Library:CreateWindow(Config)
 		BorderSizePixel = 0,
 	}, Main)
 	Corner(HeaderBox, 6)
-	Glow(HeaderBox, Theme.Accent, 0.82)
+	Glow(HeaderBox, Theme.Accent, 0.5)
 	local HeaderIcon = Icon(Main, "layers", 12, Theme.Accent)
 	HeaderIcon.AnchorPoint = Vector2.new(0.5, 0.5)
 	HeaderIcon.Position = UDim2.new(0, 149, 0, 17)
@@ -2672,16 +2688,17 @@ function Library:CreateWindow(Config)
 		Position = UDim2.new(0, 0, 0, 4),
 		Size = UDim2.new(1, 0, 0, 27),
 		BackgroundColor3 = Theme.Accent,
-		BackgroundTransparency = 0.78,
+		BackgroundTransparency = 0.6,
 		BorderSizePixel = 0,
 		Visible = false,
 	}, TabList)
 	New("UIGradient", { Transparency = NumberSequence.new(0, 1) }, TabIndicator)
-	New("Frame", {
+	local TabBar = New("Frame", {
 		Size = UDim2.new(0, 2, 1, 0),
 		BackgroundColor3 = Theme.Accent,
 		BorderSizePixel = 0,
 	}, TabIndicator)
+	BarGlow(TabBar, 0.4)
 
 	local CurrentTab
 	local PageRest = UDim2.new(0, 140, 0, 36)
@@ -2771,6 +2788,7 @@ function Library:CreateWindow(Config)
 			{ Sub.Text, { TextColor3 = On and Theme.Text or Theme.Dim } },
 		}
 		table.insert(Goals, { Sub.Bar, { BackgroundTransparency = On and 0 or 1 } })
+		table.insert(Goals, { Sub.BarGlow, { ImageTransparency = On and 0.45 or 1 } })
 		if Sub.IconObject then
 			table.insert(Goals, { Sub.IconObject, { ImageColor3 = On and Theme.Accent or Theme.Dim } })
 		end
@@ -2852,8 +2870,8 @@ function Library:CreateWindow(Config)
 		}, Tab.SubBar)
 		Corner(Pill, Round.Pill)
 		Pad(Pill, 8, 0, 9, 0)
-		Pill.BackgroundColor3 = Color3.fromRGB(14, 36, 70)
-		New("UIGradient", { Transparency = NumberSequence.new(0.3, 0.92) }, Pill)
+		Pill.BackgroundColor3 = Color3.fromRGB(10, 44, 92)
+		New("UIGradient", { Transparency = NumberSequence.new(0.1, 0.9) }, Pill)
 		local PillBar = New("Frame", {
 			Position = UDim2.new(0, -8, 0, 0),
 			Size = UDim2.new(0, 2, 1, 0),
@@ -2862,6 +2880,7 @@ function Library:CreateWindow(Config)
 			BorderSizePixel = 0,
 		}, Pill)
 		Corner(PillBar, 1)
+		local PillGlow = BarGlow(PillBar, 1)
 		local Inner = New("Frame", {
 			Size = UDim2.fromOffset(0, 22),
 			AutomaticSize = Enum.AutomaticSize.X,
@@ -2891,6 +2910,7 @@ function Library:CreateWindow(Config)
 			Text = PillText,
 			IconObject = PillIcon,
 			Bar = PillBar,
+			BarGlow = PillGlow,
 		}, SubMethods)
 		table.insert(Tab.Subs, Sub)
 		local Hover = Color3.fromRGB(150, 150, 150)
