@@ -1852,19 +1852,15 @@ function Library:CreateWindow(Config)
 	end
 
 	local function BarGlow(Bar, Transparency)
-		return New("ImageLabel", {
-			AnchorPoint = Vector2.new(0, 0.5),
-			Position = UDim2.new(0, -12, 0.5, 0),
-			Size = UDim2.new(1, 24, 1, 14),
-			BackgroundTransparency = 1,
+		local Strip = New("Frame", {
+			Position = UDim2.new(1, 0, 0, 0),
+			Size = UDim2.new(0, 18, 1, 0),
+			BackgroundColor3 = Theme.Accent,
+			BackgroundTransparency = Transparency,
 			BorderSizePixel = 0,
-			Image = "rbxassetid://5028857084",
-			ImageColor3 = Theme.Accent,
-			ImageTransparency = Transparency,
-			ScaleType = Enum.ScaleType.Slice,
-			SliceCenter = Rect.new(24, 24, 276, 276),
-			ZIndex = 1,
 		}, Bar)
+		New("UIGradient", { Transparency = NumberSequence.new(0, 1) }, Strip)
+		return Strip
 	end
 
 	local WatermarkWrap = New("Frame", {
@@ -2323,6 +2319,17 @@ function Library:CreateWindow(Config)
 	Drag(TopDrag, Main)
 	Drag(Brand, Main)
 
+	for Index = 1, 6 do
+		local Spread = (7 - Index) * 2
+		local Layer = New("Frame", {
+			Position = UDim2.new(0, 137 - Spread, 0, 5 - Spread),
+			Size = UDim2.fromOffset(24 + Spread * 2, 24 + Spread * 2),
+			BackgroundColor3 = Theme.Accent,
+			BackgroundTransparency = 0.97 - (Index - 1) * 0.04,
+			BorderSizePixel = 0,
+		}, Main)
+		Corner(Layer, 6 + Spread)
+	end
 	local HeaderBox = New("Frame", {
 		Position = UDim2.new(0, 137, 0, 5),
 		Size = UDim2.fromOffset(24, 24),
@@ -2330,7 +2337,6 @@ function Library:CreateWindow(Config)
 		BorderSizePixel = 0,
 	}, Main)
 	Corner(HeaderBox, 6)
-	Glow(HeaderBox, Theme.Accent, 0.5)
 	local HeaderIcon = Icon(Main, "layers", 12, Theme.Accent)
 	HeaderIcon.AnchorPoint = Vector2.new(0.5, 0.5)
 	HeaderIcon.Position = UDim2.new(0, 149, 0, 17)
@@ -2698,7 +2704,7 @@ function Library:CreateWindow(Config)
 		BackgroundColor3 = Theme.Accent,
 		BorderSizePixel = 0,
 	}, TabIndicator)
-	BarGlow(TabBar, 0.4)
+	BarGlow(TabBar, 0.35)
 
 	local CurrentTab
 	local PageRest = UDim2.new(0, 140, 0, 36)
@@ -2788,7 +2794,7 @@ function Library:CreateWindow(Config)
 			{ Sub.Text, { TextColor3 = On and Theme.Text or Theme.Dim } },
 		}
 		table.insert(Goals, { Sub.Bar, { BackgroundTransparency = On and 0 or 1 } })
-		table.insert(Goals, { Sub.BarGlow, { ImageTransparency = On and 0.45 or 1 } })
+		table.insert(Goals, { Sub.BarGlow, { BackgroundTransparency = On and 0.35 or 1 } })
 		if Sub.IconObject then
 			table.insert(Goals, { Sub.IconObject, { ImageColor3 = On and Theme.Accent or Theme.Dim } })
 		end
