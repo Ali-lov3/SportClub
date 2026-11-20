@@ -2307,15 +2307,23 @@ function Library:CreateWindow(Config)
 	Drag(TopDrag, Main)
 	Drag(Brand, Main)
 
-	local HeaderIcon = Icon(Main, "layers", 11, Theme.Accent)
-	HeaderIcon.AnchorPoint = Vector2.new(0, 0.5)
-	HeaderIcon.Position = UDim2.new(0, 140, 0, 17)
-	local HeaderTitle = Label(Main, "", 10, Theme.Text)
-	HeaderTitle.Position = UDim2.new(0, 160, 0, 8)
+	local HeaderBox = New("Frame", {
+		Position = UDim2.new(0, 137, 0, 5),
+		Size = UDim2.fromOffset(24, 24),
+		BackgroundColor3 = Color3.fromRGB(13, 30, 56),
+		BorderSizePixel = 0,
+	}, Main)
+	Corner(HeaderBox, 6)
+	Glow(HeaderBox, Theme.Accent, 0.82)
+	local HeaderIcon = Icon(Main, "layers", 12, Theme.Accent)
+	HeaderIcon.AnchorPoint = Vector2.new(0.5, 0.5)
+	HeaderIcon.Position = UDim2.new(0, 149, 0, 17)
+	local HeaderTitle = Label(Main, "", 11, Theme.Text, FontBold)
+	HeaderTitle.Position = UDim2.new(0, 168, 0, 8)
 	HeaderTitle.Size = UDim2.fromOffset(110, 18)
 	local HeaderSub = Label(Main, "", 8, Theme.Dim)
-	HeaderSub.Position = UDim2.new(0, 160, 0, 19)
-	HeaderSub.Size = UDim2.fromOffset(134, 11)
+	HeaderSub.Position = UDim2.new(0, 168, 0, 19)
+	HeaderSub.Size = UDim2.fromOffset(128, 11)
 	HeaderSub.TextTruncate = Enum.TextTruncate.AtEnd
 
 	local function ApplyHeader(Tab)
@@ -2323,8 +2331,8 @@ function Library:CreateWindow(Config)
 		HeaderTitle.Text = Tab.Name
 		local Has = type(Tab.Description) == "string" and Tab.Description ~= ""
 		HeaderSub.Text = Has and Tab.Description or ""
-		HeaderTitle.Position = Has and UDim2.new(0, 160, 0, 6) or UDim2.new(0, 160, 0, 8)
-		HeaderTitle.Size = Has and UDim2.fromOffset(134, 12) or UDim2.fromOffset(110, 18)
+		HeaderTitle.Position = Has and UDim2.new(0, 168, 0, 6) or UDim2.new(0, 168, 0, 8)
+		HeaderTitle.Size = Has and UDim2.fromOffset(128, 12) or UDim2.fromOffset(110, 18)
 	end
 
 	local SearchHolder = New("Frame", {
@@ -2661,13 +2669,19 @@ function Library:CreateWindow(Config)
 	end
 
 	local TabIndicator = New("Frame", {
-		Position = UDim2.new(0, 10, 0, 4),
-		Size = UDim2.new(1, -20, 0, 25),
-		BackgroundColor3 = Theme.Item,
+		Position = UDim2.new(0, 0, 0, 4),
+		Size = UDim2.new(1, 0, 0, 27),
+		BackgroundColor3 = Theme.Accent,
+		BackgroundTransparency = 0.78,
 		BorderSizePixel = 0,
 		Visible = false,
 	}, TabList)
-	Corner(TabIndicator, Round.Button)
+	New("UIGradient", { Transparency = NumberSequence.new(0, 1) }, TabIndicator)
+	New("Frame", {
+		Size = UDim2.new(0, 2, 1, 0),
+		BackgroundColor3 = Theme.Accent,
+		BorderSizePixel = 0,
+	}, TabIndicator)
 
 	local CurrentTab
 	local PageRest = UDim2.new(0, 140, 0, 36)
@@ -2692,7 +2706,7 @@ function Library:CreateWindow(Config)
 			Tween(Other.Text, { TextColor3 = On and Theme.Text or Theme.Dim }, 0.3)
 			Tween(Other.IconObject, { ImageColor3 = On and Theme.Accent or Theme.Dim }, 0.3)
 		end
-		local Goal = UDim2.new(0, 10, 0, Tab.Top)
+		local Goal = UDim2.new(0, 0, 0, Tab.Top - 1)
 		if Instant then
 			TabIndicator.Position = Goal
 			TabIndicator.Visible = true
@@ -2756,6 +2770,7 @@ function Library:CreateWindow(Config)
 			{ Sub.Pill, { BackgroundTransparency = On and 0 or 1 } },
 			{ Sub.Text, { TextColor3 = On and Theme.Text or Theme.Dim } },
 		}
+		table.insert(Goals, { Sub.Bar, { BackgroundTransparency = On and 0 or 1 } })
 		if Sub.IconObject then
 			table.insert(Goals, { Sub.IconObject, { ImageColor3 = On and Theme.Accent or Theme.Dim } })
 		end
@@ -2837,6 +2852,16 @@ function Library:CreateWindow(Config)
 		}, Tab.SubBar)
 		Corner(Pill, Round.Pill)
 		Pad(Pill, 8, 0, 9, 0)
+		Pill.BackgroundColor3 = Color3.fromRGB(14, 36, 70)
+		New("UIGradient", { Transparency = NumberSequence.new(0.3, 0.92) }, Pill)
+		local PillBar = New("Frame", {
+			Position = UDim2.new(0, -8, 0, 0),
+			Size = UDim2.new(0, 2, 1, 0),
+			BackgroundColor3 = Theme.Accent,
+			BackgroundTransparency = 1,
+			BorderSizePixel = 0,
+		}, Pill)
+		Corner(PillBar, 1)
 		local Inner = New("Frame", {
 			Size = UDim2.fromOffset(0, 22),
 			AutomaticSize = Enum.AutomaticSize.X,
@@ -2865,6 +2890,7 @@ function Library:CreateWindow(Config)
 			Pill = Pill,
 			Text = PillText,
 			IconObject = PillIcon,
+			Bar = PillBar,
 		}, SubMethods)
 		table.insert(Tab.Subs, Sub)
 		local Hover = Color3.fromRGB(150, 150, 150)
@@ -2890,26 +2916,17 @@ function Library:CreateWindow(Config)
 
 	local function CreateTab(Name, IconName, Category, Description)
 		local Index = #Tabs + 1
-		if Category ~= nil and Category ~= TabCategory then
-			if TabCategory ~= nil or Index > 1 then
-				TabCursor = TabCursor + 2
-				New("Frame", {
-					Position = UDim2.new(0, 10, 0, TabCursor),
-					Size = UDim2.new(1, -21, 0, 1),
-					BackgroundColor3 = Theme.Divider,
-					BorderSizePixel = 0,
-				}, TabList)
-				TabCursor = TabCursor + 8
-			end
-			TabCategory = Category
-			local Head = Label(TabList, tostring(Category), 9, Theme.Dim)
-			Head.Position = UDim2.new(0, 14, 0, TabCursor)
-			Head.Size = UDim2.new(1, -28, 0, 12)
-			TabCursor = TabCursor + 17
-		end
+		TabCategory = Category
 		local Top = TabCursor
 		TabCursor = TabCursor + 32
 		TabList.CanvasSize = UDim2.fromOffset(0, TabCursor)
+		New("Frame", {
+			Position = UDim2.new(0, 10, 0, Top + 29),
+			Size = UDim2.new(1, -21, 0, 1),
+			BackgroundColor3 = Theme.Stroke,
+			BackgroundTransparency = 0.45,
+			BorderSizePixel = 0,
+		}, TabList)
 		local Button = New("TextButton", {
 			Position = UDim2.new(0, 10, 0, Top),
 			Size = UDim2.new(1, -20, 0, 25),

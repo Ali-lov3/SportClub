@@ -7,6 +7,8 @@ local Window = Library:CreateWindow({
 	Link = "https://getsportsclub.com",
 	Logo = 77434646025119,
 	ConfigFolder = "Example",
+	Footer = true,
+	LifeTime = true,
 })
 
 Window:ConfigManager()
