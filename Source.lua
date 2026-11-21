@@ -141,6 +141,39 @@ local function Stroke(Obj, Color, Thickness)
 	return New("UIStroke", { Color = Color, Thickness = Thickness or 1, ApplyStrokeMode = Enum.ApplyStrokeMode.Border }, Obj)
 end
 
+local function DecodeBase64(Text)
+	local Lookup = {}
+	local Chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/"
+	for Index = 1, #Chars do
+		Lookup[string.byte(Chars, Index)] = Index - 1
+	end
+	local Out = {}
+	local Bits = 0
+	local Count = 0
+	for Index = 1, #Text do
+		local Value = Lookup[string.byte(Text, Index)]
+		if Value then
+			Bits = Bits * 64 + Value
+			Count = Count + 6
+			if Count >= 8 then
+				Count = Count - 8
+				local Byte = math.floor(Bits / 2 ^ Count)
+				Out[#Out + 1] = string.char(Byte)
+				Bits = Bits - Byte * 2 ^ Count
+			end
+		end
+	end
+	return table.concat(Out)
+end
+
+local GlowImage = "rbxassetid://5028857084"
+if type(writefile) == "function" and type(getcustomasset) == "function" then
+	pcall(function()
+		writefile("SportClubGlow.png", DecodeBase64("iVBORw0KGgoAAAANSUhEUgAAAEAAAABACAYAAACqaXHeAAAExUlEQVR42uVb7W7bMAwkFe39X7gS96cBNPb4JdlehgUw3DqJI56OR4qUWUTowRcnP/fYoPoDxvHhveROkPpFBl9pPLqHJK7LUwBwAABfDIIkGbEFRD8wPDpfCQD6Xxx2pIHoBeM58ffTALzPFhhyCgAyTh8aiCtBQPRnw3DZcZueNJ6TxnNCE04YgOiv/xYFiOsqPUl9LgBx6hJZyluzX9KDXjC8GYY3BxAPiOzMewAIEU2DATMDRE8KXgtAaQEzrgLAMh4Z25brWjvSGsCO4c0Aod0MwATGv8/T0bGUBmT8vRmHx4hTAFbjmzprBswgafuDBb04+9rolwPG+/MoTGYBkMWoFYS5GI/uOw0AXA3wVB0B8DLOLdCEKgBiGD+ce4rhAj9yg4gBBNReG70ezQFhZzlsGf+e/WF8ty0AyTKG4yigGfAKQLD0oDL705j96HtNhUgIQjcMR0B4IPTAJSquYNF+KOqzA1hTbsDALf5wAU5qgXaDzKGZQAnf1TM/FK2HEyIbmHE2gJCdVLg5YtgXNnT1/g4D3sa/iOhLgSjf10WNZ4Ixp1NhdlzBcgPtCl0BoVmQYYCefU177etac2ZgR5gHeJqQAeEXAKAVGTAXSuuZ1+8h48nQgHJBJJMVWgzoDgAchL7VSDbem07OkYo6fWPdjkIbyg26IYYVBgx1fdWEYbhnqdDaneIHJdf/UW7QAY0zUUCD9Z7x1xIV2sZ418ggmYrQlWuFiJoCChwvQ+wqdD/SgAoTvBUjK1dAixQd90kZz86Se2vt0Q9rdtnKERsRgYCPv6+Pwr23x5+NAjs9A5RKrzqBABgKjEqtcWvsd/QG2WFJA1FBGyzOWn+3uPIIABn0NRAMMkDeZOHHAeAZoStG8+JeQvrV6D9/PckAMbI9Itza+ucBkCDNJSCC4nzv4wEQY7Bi5PfTCIPTyAi937gVANkwHjUop5pxKxGaCwjWvarjcgEQOmtfi1HE1IeV5FipcOXe26ztB4ZaLSvUvKClpjeTi6EJDjH0QnaB6Zv0kUTjAjUvqkXRtRqMgMgaHNYE0SYDLsz8VPW7pnKMl7HGzxRE0IHAyDJVUFmcClqAfFFXahqo2++WxMZ3RXio3sA09KEUovuB/+tBtu+BMojvJ0XRsYDwBcCYwRiPNMDK3ix/96q3p2Vxy/ipPm+NOwWA1gCkzM0RO/2dQdc0RuZifAUECcptoQtUlH6AmV+rt6etMSSE2QhB2ShAQSRYGTCM2p4YbnFlc3QagFgMsBjxIwogY5jwnhwGdfu1gjvp3va4FxZRKg01oTs/zoR3Y0Vl7ac2SGRBEE8MezADaxPB25Imydr9FesMzyUmqDO4kaAb6SIbK7AZDPbpTVJWupzNBl0GUBIALZB3b5PzcpHyWqEHiwa09p6O8Xr/HtG9GyURGJI4ypmgBmYulF/PSCjv3iorScPTqbAoHaBlZvVr0M89OX9jszQFxZOtKEBg1pGyV1tYV26XpyTl0xpQramh3VhEzzwwQQUg7G5N8ODkJzwyE/UWKAh77kRy8snRf+GhKcr4/G5fQAzqy4cAQJtl81JjRAIdkIcBiPThts5Q5QElvqiLk3k4cut3+MKnx+96fvhjH57eGejHPT7/G9Isy4bmsNQNAAAAAElFTkSuQmCC"))
+		GlowImage = getcustomasset("SportClubGlow.png")
+	end)
+end
+
 local function Pad(Obj, L, T, R, B)
 	return New("UIPadding", {
 		PaddingLeft = UDim.new(0, L),
@@ -1836,21 +1869,6 @@ function Library:CreateWindow(Config)
 		VerticalAlignment = Enum.VerticalAlignment.Top,
 	}, NotifyHolder)
 
-	local function Glow(Parent, Color, Transparency)
-		return New("ImageLabel", {
-			Position = UDim2.new(0, -16, 0, -16),
-			Size = UDim2.new(1, 32, 1, 32),
-			BackgroundTransparency = 1,
-			BorderSizePixel = 0,
-			Image = "rbxassetid://5028857084",
-			ImageColor3 = Color,
-			ImageTransparency = Transparency,
-			ScaleType = Enum.ScaleType.Slice,
-			SliceCenter = Rect.new(24, 24, 276, 276),
-			ZIndex = 1,
-		}, Parent)
-	end
-
 	local WatermarkWrap = New("Frame", {
 		Size = UDim2.new(1, 0, 0, 0),
 		AutomaticSize = Enum.AutomaticSize.Y,
@@ -1864,7 +1882,6 @@ function Library:CreateWindow(Config)
 		AutomaticSize = Enum.AutomaticSize.XY,
 		BackgroundTransparency = 1,
 	}, WatermarkWrap)
-	Glow(WatermarkCard, Theme.Accent, 0.88)
 	local WatermarkBg = New("Frame", {
 		Size = UDim2.fromScale(1, 1),
 		BackgroundColor3 = Theme.Notice,
@@ -1965,7 +1982,6 @@ function Library:CreateWindow(Config)
 			AutomaticSize = Enum.AutomaticSize.XY,
 			BackgroundTransparency = 1,
 		}, Slot)
-		Glow(Card, Tint, 0.88)
 		local Bg = New("Frame", {
 			Size = UDim2.fromScale(1, 1),
 			BackgroundColor3 = Theme.Notice,
@@ -2310,12 +2326,12 @@ function Library:CreateWindow(Config)
 	New("ImageLabel", {
 		AnchorPoint = Vector2.new(0.5, 0.5),
 		Position = UDim2.new(0, 149, 0, 17),
-		Size = UDim2.fromOffset(48, 48),
+		Size = UDim2.fromOffset(44, 44),
 		BackgroundTransparency = 1,
 		BorderSizePixel = 0,
-		Image = "rbxassetid://5028857084",
+		Image = GlowImage,
 		ImageColor3 = Theme.Accent,
-		ImageTransparency = 0.45,
+		ImageTransparency = 0,
 		ScaleType = Enum.ScaleType.Stretch,
 	}, Main)
 	local HeaderIcon = Icon(Main, "layers", 12, Theme.Accent)
