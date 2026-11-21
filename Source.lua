@@ -2698,19 +2698,22 @@ function Library:CreateWindow(Config)
 	local TabFade = New("Frame", {
 		Size = UDim2.fromScale(1, 1),
 		BackgroundColor3 = Theme.Accent,
-		BackgroundTransparency = 0.8,
+		BackgroundTransparency = 0.7,
 		BorderSizePixel = 0,
 	}, TabIndicator)
 	Corner(TabFade, Round.Button)
 	New("UIGradient", {
 		Transparency = NumberSequence.new({
 			NumberSequenceKeypoint.new(0, 0),
-			NumberSequenceKeypoint.new(0.4, 1),
+			NumberSequenceKeypoint.new(0.05, 0.35),
+			NumberSequenceKeypoint.new(0.14, 0.6),
+			NumberSequenceKeypoint.new(0.3, 0.9),
+			NumberSequenceKeypoint.new(0.42, 1),
 			NumberSequenceKeypoint.new(1, 1),
 		}),
 	}, TabFade)
 	New("Frame", {
-		Size = UDim2.new(0, 3, 1, 0),
+		Size = UDim2.new(0, 1.5, 1, 0),
 		BackgroundColor3 = Theme.Accent,
 		BorderSizePixel = 0,
 	}, TabIndicator)
@@ -2803,7 +2806,7 @@ function Library:CreateWindow(Config)
 			{ Sub.Text, { TextColor3 = On and Theme.Text or Theme.Dim } },
 		}
 		table.insert(Goals, { Sub.Bar, { BackgroundTransparency = On and 0 or 1 } })
-		table.insert(Goals, { Sub.Fade, { BackgroundTransparency = On and 0.8 or 1 } })
+		table.insert(Goals, { Sub.Fade, { BackgroundTransparency = On and 0.7 or 1 } })
 		if Sub.IconObject then
 			table.insert(Goals, { Sub.IconObject, { ImageColor3 = On and Theme.Accent or Theme.Dim } })
 		end
@@ -2897,13 +2900,16 @@ function Library:CreateWindow(Config)
 		New("UIGradient", {
 			Transparency = NumberSequence.new({
 				NumberSequenceKeypoint.new(0, 0),
-				NumberSequenceKeypoint.new(0.45, 1),
+				NumberSequenceKeypoint.new(0.05, 0.35),
+				NumberSequenceKeypoint.new(0.14, 0.6),
+				NumberSequenceKeypoint.new(0.3, 0.9),
+				NumberSequenceKeypoint.new(0.42, 1),
 				NumberSequenceKeypoint.new(1, 1),
 			}),
 		}, PillFade)
 		local PillBar = New("Frame", {
 			Position = UDim2.new(0, -8, 0, 0),
-			Size = UDim2.new(0, 3, 1, 0),
+			Size = UDim2.new(0, 1.5, 1, 0),
 			BackgroundColor3 = Theme.Accent,
 			BackgroundTransparency = 1,
 			BorderSizePixel = 0,
